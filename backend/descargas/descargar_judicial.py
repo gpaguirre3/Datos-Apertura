@@ -7,7 +7,8 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from .descargar_certificados import captura_error, con_reintentos, leer_cedulas, leer_proxy
+from .descargar_certificados import (ajustar_ventana, captura_error, centrar_captcha,
+                                     con_reintentos, leer_cedulas, leer_proxy)
 
 URL = os.environ.get("JUDICIAL_URL", "https://procesosjudiciales.funcionjudicial.gob.ec/busqueda-filtros")
 SIN_RESULTADOS = "La consulta no devolvió resultados"
@@ -100,39 +101,6 @@ def hay_pantalla():
     return not sys.platform.startswith("linux") or bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
 
 
-VENTANA = {"width": 1280, "height": 960}  # medida de reserva si no se puede leer la pantalla
-BARRA_NAVEGADOR = 120  # alto aproximado de pestañas y barra de direcciones
-MINIMO = {"width": 1024, "height": 700}  # por debajo de esto el captcha no cabe
-
-
-def ajustar_a_pantalla(page):
-    """Maximiza la ventana sobre la pantalla real para que quepa el reto del captcha."""
-    try:
-        ancho, alto = page.evaluate("() => [screen.availWidth, screen.availHeight]")
-        page.set_viewport_size({
-            "width": max(MINIMO["width"], int(ancho)),
-            "height": max(MINIMO["height"], int(alto) - BARRA_NAVEGADOR),
-        })
-    except Exception:
-        pass  # se queda con la medida de reserva
-
-
-CENTRAR_CAPTCHA = """() => {
-  let movidos = 0;
-  for (const marco of document.querySelectorAll("iframe")) {
-    if (!/recaptcha/i.test(marco.src) || !/bframe/.test(marco.src)) continue;
-    const caja = marco.parentElement;  // el div que lo posiciona junto a la casilla
-    if (!caja) continue;
-    Object.assign(caja.style, {
-      position: "fixed", left: "50%", top: "50%", right: "auto", bottom: "auto",
-      transform: "translate(-50%, -50%)", margin: "0", zIndex: "2147483647",
-    });
-    movidos++;
-  }
-  return movidos;
-}"""
-
-
 def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelado=None):
     if not hay_pantalla():
         raise RuntimeError("Procesos judiciales pide un captcha que debes marcar tú: "
@@ -141,9 +109,11 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
     salida.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=False, proxy=leer_proxy(), args=["--window-position=0,0"])
-        page = browser.new_page(viewport=dict(VENTANA), device_scale_factor=2)
-        ajustar_a_pantalla(page)
+        browser = pw.chromium.launch(headless=False, proxy=leer_proxy(),
+                                     args=["--window-position=0,0", "--start-maximized"])
+        # Sin viewport fijo la página ocupa la ventana real, sea cual sea la pantalla
+        page = browser.new_page(no_viewport=True)
+        print("Ventana", ajustar_ventana(page))
 
         ultima = {"busqueda": 0.0}  # cuándo empezó la búsqueda anterior
 
@@ -180,10 +150,7 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
                     while not buscar.is_enabled():
                         if time.time() > limite or (cancelado and cancelado()):
                             return False
-                        try:
-                            page.evaluate(CENTRAR_CAPTCHA)  # el reto de imágenes sale recortado al borde
-                        except Exception:
-                            pass
+                        centrar_captcha(page)  # si no, el reto sale cortado en el borde
                         page.wait_for_timeout(500)
                     return True
 

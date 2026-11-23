@@ -199,6 +199,70 @@ def leer_proxy():
     return proxy
 
 
+VENTANA_RESERVA = {"width": 1280, "height": 960}  # si no se puede leer la pantalla
+VENTANA_MINIMA = {"width": 1024, "height": 700}  # por debajo no cabe un captcha
+BARRA_NAVEGADOR = 120  # alto de pestañas y barra de direcciones
+
+
+def ajustar_ventana(page):
+    """Adapta la ventana del navegador a la pantalla del equipo, sea del tamaño que sea.
+
+    Vale para cualquier robot que muestre la ventana. Devuelve qué se pudo hacer.
+    """
+    try:
+        sesion = page.context.new_cdp_session(page)
+        ventana = sesion.send("Browser.getWindowForTarget")["windowId"]
+        sesion.send("Browser.setWindowBounds",
+                    {"windowId": ventana, "bounds": {"windowState": "maximized"}})
+        ancho, alto, usado = page.evaluate(
+            "() => [screen.availWidth, screen.availHeight, innerWidth]")
+        if usado >= ancho * 0.9:
+            return "maximizada"
+        # Sin gestor de ventanas maximizar no llena la pantalla: se fija a mano
+        sesion.send("Browser.setWindowBounds", {"windowId": ventana, "bounds": {
+            "windowState": "normal", "left": 0, "top": 0,
+            "width": int(ancho), "height": int(alto)}})
+        return "estirada a la pantalla"
+    except Exception:
+        pass
+    try:
+        ancho, alto = page.evaluate("() => [screen.availWidth, screen.availHeight]")
+        page.set_viewport_size({
+            "width": max(VENTANA_MINIMA["width"], int(ancho)),
+            "height": max(VENTANA_MINIMA["height"], int(alto) - BARRA_NAVEGADOR),
+        })
+        return "ajustada a la pantalla"
+    except Exception:
+        return "con la medida de reserva"
+
+
+CENTRAR_CAPTCHA = """() => {
+  let movidos = 0;
+  for (const marco of document.querySelectorAll("iframe")) {
+    if (!/recaptcha/i.test(marco.src) || !/bframe/.test(marco.src)) continue;
+    const caja = marco.parentElement;  // el div que lo pega a la casilla y lo saca de la pantalla
+    if (!caja) continue;
+    const ancho = marco.offsetWidth || 400, alto = marco.offsetHeight || 580;
+    // En pantallas pequeñas se encoge lo justo para que quepa entero
+    const escala = Math.min(1, (innerWidth - 24) / ancho, (innerHeight - 24) / alto);
+    Object.assign(caja.style, {
+      position: "fixed", left: "50%", top: "50%", right: "auto", bottom: "auto",
+      transform: `translate(-50%, -50%) scale(${escala})`, margin: "0", zIndex: "2147483647",
+    });
+    movidos++;
+  }
+  return movidos;
+}"""
+
+
+def centrar_captcha(page):
+    """Pone el reto de imágenes en el centro, para que no quede cortado en pantallas chicas."""
+    try:
+        return page.evaluate(CENTRAR_CAPTCHA)
+    except Exception:
+        return 0
+
+
 REINTENTOS = 2  # intentos extra para las cédulas que fallan, al final de la pasada
 
 
