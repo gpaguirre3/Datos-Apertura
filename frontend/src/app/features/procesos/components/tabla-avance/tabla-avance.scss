@@ -1,0 +1,87 @@
+.filtros {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.filtro {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.filtro--activo {
+  border-color: var(--marca);
+  background: var(--marca);
+  color: #fff;
+}
+
+.tabla-caja {
+  max-height: 24rem;
+  overflow: auto;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabla th {
+  position: sticky;
+  top: 0;
+  padding: 0.5rem 0.7rem;
+  background: #f1f5f9;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tabla td {
+  padding: 0.45rem 0.7rem;
+  border-top: 1px solid var(--borde);
+}
+
+.tabla__cedula {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tabla__estado {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tabla__detalle {
+  color: var(--texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.tabla__vacia {
+  padding: 1.2rem;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+.fila--ok .tabla__estado {
+  color: #15803d;
+}
+
+.fila--error .tabla__estado {
+  color: #b91c1c;
+}
+
+.fila--espera .tabla__estado {
+  color: #b45309;
+}
+
+.fila--cancelado .tabla__estado {
+  color: var(--texto-suave);
+}

@@ -1,0 +1,81 @@
+.lateral {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: var(--ancho-lateral);
+  background: #2f3c4e;
+  color: #cbd5e1;
+}
+
+.lateral__marca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: var(--alto-barra);
+  padding: 0 1rem;
+  background: #27323f;
+  color: #fff;
+  text-decoration: none;
+}
+
+.lateral__logo {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.lateral__nombre {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.lateral__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 0;
+}
+
+.lateral__nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 1rem;
+  border-left: 3px solid transparent;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lateral__nav a:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.lateral__nav a.activo {
+  border-left-color: #fff;
+  background: var(--azul);
+  color: #fff;
+}
+
+.lateral__icono {
+  width: 1.1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .lateral {
+    transform: translateX(-100%);
+    transition: transform 0.18s ease;
+  }
+
+  .lateral--abierta {
+    transform: none;
+  }
+}

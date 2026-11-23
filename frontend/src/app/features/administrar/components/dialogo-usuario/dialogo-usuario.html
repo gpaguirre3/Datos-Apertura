@@ -1,0 +1,46 @@
+<dialog #dialogo class="dialogo" (close)="cerrar.emit()" (cancel)="cerrar.emit()">
+  <form class="dialogo__caja" (ngSubmit)="enviar()">
+    <header class="dialogo__cabecera">
+      <h2 class="dialogo__titulo">Nuevo usuario</h2>
+      <button type="button" class="dialogo__cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+        ×
+      </button>
+    </header>
+
+    <div class="dialogo__cuerpo">
+      <app-alerta [texto]="error()" tipo="error" />
+
+      <label class="campo">
+        Usuario
+        <input
+          name="usuario"
+          [(ngModel)]="datos.usuario"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="nombre.apellido"
+          required
+          autofocus />
+      </label>
+
+      <label class="campo">
+        Contraseña
+        <app-campo-clave [(valor)]="datos.clave" marcador="mínimo 4 caracteres" />
+      </label>
+
+      <label class="campo">
+        Rol
+        <select name="rol" [(ngModel)]="datos.rol">
+          <option value="usuario">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </label>
+    </div>
+
+    <footer class="dialogo__pie">
+      <button type="button" class="boton boton--borde" (click)="cerrar.emit()">Cancelar</button>
+      <button type="submit" class="boton" [disabled]="guardando()">
+        {{ guardando() ? 'Creando…' : 'Crear usuario' }}
+      </button>
+    </footer>
+  </form>
+</dialog>

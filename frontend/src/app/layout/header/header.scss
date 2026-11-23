@@ -1,0 +1,80 @@
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: var(--alto-barra);
+  padding: 0 clamp(0.75rem, 2vw, 1.5rem);
+  border-bottom: 1px solid var(--borde);
+  background: #fff;
+}
+
+.barra__menu {
+  display: none;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.barra__relleno {
+  flex: 1;
+}
+
+.barra__usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+}
+
+.barra__avatar {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.barra__nombre {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.barra__salir {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.barra__salir:hover {
+  border-color: var(--rojo);
+  color: var(--rojo);
+}
+
+@media (max-width: 900px) {
+  .barra__menu {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .barra__nombre {
+    display: none;
+  }
+}

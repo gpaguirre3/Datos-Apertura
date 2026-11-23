@@ -1,0 +1,15 @@
+.env
+.clave_sesion
+
+venv/
+__pycache__/
+*.pyc
+
+registros/
+
+trabajos/
+usuarios.json
+usuarios.json.migrado
+
+
+*.log

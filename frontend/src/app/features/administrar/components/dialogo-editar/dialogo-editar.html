@@ -1,0 +1,88 @@
+<dialog #dialogo class="dialogo" (close)="cerrar.emit()" (cancel)="cerrar.emit()">
+  @if (usuario(); as u) {
+    <form (ngSubmit)="enviar()">
+      <header class="dialogo__cabecera">
+        <h2 class="dialogo__titulo">Editar «{{ u.usuario }}»</h2>
+        <button type="button" class="dialogo__cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+          ×
+        </button>
+      </header>
+
+      <div class="dialogo__cuerpo">
+        <app-alerta [texto]="error()" tipo="error" />
+
+        <label class="campo">
+          Usuario
+          <input
+            name="nombre"
+            [(ngModel)]="nombre"
+            autocomplete="off"
+            spellcheck="false"
+            required />
+        </label>
+
+        <label class="campo">
+          Rol
+          <select name="rol" [(ngModel)]="rol" [disabled]="esYo()">
+            <option value="usuario">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+          @if (esYo()) {
+            <small class="campo__nota">No puedes cambiarte el rol a ti mismo.</small>
+          }
+        </label>
+
+        <label class="campo">
+          Contraseña nueva
+          <app-campo-clave [(valor)]="clave" marcador="nueva contraseña" />
+          <small class="campo__nota">Mínimo 4 caracteres. </small>
+        </label>
+
+        <div class="peligro">
+          <div>
+            <strong class="peligro__titulo">Eliminar usuario</strong>
+          </div>
+          <button
+            type="button"
+            class="boton boton--peligro"
+            [disabled]="esYo() || guardando()"
+            (click)="pedirEliminar()">
+            Eliminar
+          </button>
+        </div>
+      </div>
+
+      <footer class="dialogo__pie">
+        <button type="button" class="boton boton--borde" (click)="cerrar.emit()">Cancelar</button>
+        <button type="submit" class="boton" [disabled]="guardando() || !hayCambios()">
+          {{ guardando() ? 'Guardando…' : 'Guardar cambios' }}
+        </button>
+      </footer>
+    </form>
+  }
+</dialog>
+
+<dialog #confirmacion class="dialogo dialogo--aviso" (close)="confirmando.set(false)"
+        (cancel)="confirmando.set(false)">
+  @if (usuario(); as u) {
+    <div class="dialogo__cabecera">
+      <h2 class="dialogo__titulo">Eliminar usuario</h2>
+    </div>
+
+    <div class="dialogo__cuerpo">
+      <p class="aviso__texto">
+        Se va a eliminar a <strong>{{ u.usuario }}</strong>. Perderá el acceso y no se puede
+        deshacer.
+      </p>
+    </div>
+
+    <div class="dialogo__pie">
+      <button type="button" class="boton boton--borde" (click)="confirmando.set(false)">
+        Cancelar
+      </button>
+      <button type="button" class="boton boton--rojo" (click)="confirmarEliminar()">
+        Sí, eliminar
+      </button>
+    </div>
+  }
+</dialog>

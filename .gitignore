@@ -1,0 +1,5 @@
+# Lo propio de cada parte está en backend/.gitignore y frontend/.gitignore.
+
+*.log
+.DS_Store
+Thumbs.db

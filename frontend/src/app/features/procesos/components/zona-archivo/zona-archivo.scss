@@ -1,0 +1,39 @@
+.zona {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 1.1rem 1rem;
+  border: 2px dashed var(--borde);
+  border-radius: 12px;
+  background: #f8fafc;
+  text-align: center;
+  cursor: pointer;
+}
+
+.zona:hover,
+.zona--encima {
+  border-color: var(--marca);
+  background: #eff6ff;
+}
+
+.zona--con-archivo {
+  border-style: solid;
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.zona__entrada {
+  display: none;
+}
+
+.zona__texto {
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.zona__ayuda {
+  color: var(--texto-suave);
+  font-size: 0.78rem;
+}

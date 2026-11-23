@@ -1,0 +1,23 @@
+<div
+  class="zona"
+  [class.zona--encima]="encima()"
+  [class.zona--con-archivo]="!!archivo()"
+  role="button"
+  tabindex="0"
+  (click)="abrir()"
+  (keydown.enter)="abrir()"
+  (keydown.space)="abrir()"
+  (dragover)="$event.preventDefault(); encima.set(true)"
+  (dragleave)="encima.set(false)"
+  (drop)="soltar($event)">
+  <input
+    #entrada
+    type="file"
+    class="zona__entrada"
+    [accept]="extension()"
+    (change)="seleccionar($event)" />
+  <span class="zona__texto">{{ descripcion }}</span>
+  @if (ayuda()) {
+    <small class="zona__ayuda">{{ ayuda() }}</small>
+  }
+</div>

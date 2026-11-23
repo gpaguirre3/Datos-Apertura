@@ -1,0 +1,12 @@
+<header class="barra">
+  <button type="button" class="barra__menu" aria-label="Menú" (click)="alternarMenu.emit()">☰</button>
+
+  <div class="barra__relleno"></div>
+
+  <span class="barra__usuario">
+    <span class="barra__avatar" aria-hidden="true">{{ inicial }}</span>
+    <span class="barra__nombre">{{ auth.usuario()?.usuario }}</span>
+  </span>
+
+  <button type="button" class="barra__salir" (click)="salir()">Salir</button>
+</header>

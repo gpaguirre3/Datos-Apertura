@@ -1,0 +1,34 @@
+<app-alerta [texto]="error()" tipo="error" />
+<app-alerta [texto]="aviso()" tipo="ok" />
+
+<section class="tarjeta">
+  <div class="cabecera-tabla">
+    <h2 class="tarjeta__titulo">Usuarios</h2>
+    <div class="cabecera-tabla__acciones">
+      <button type="button" class="boton boton--borde" (click)="cargar()">Actualizar</button>
+      <button type="button" class="boton" (click)="abrirNuevo()">Nuevo usuario</button>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="tarjeta__cuerpo"><app-cargando texto="Cargando usuarios…" /></div>
+  } @else {
+    <app-tabla-usuarios [usuarios]="usuarios()" [yo]="yo()" (editar)="abrirEditar($event)" />
+  }
+</section>
+
+<app-dialogo-usuario
+  [abierto]="nuevoAbierto()"
+  [guardando]="creando()"
+  [error]="errorNuevo()"
+  (crear)="crear($event)"
+  (cerrar)="nuevoAbierto.set(false)" />
+
+<app-dialogo-editar
+  [usuario]="editando()"
+  [esYo]="editandoEsYo()"
+  [guardando]="guardando()"
+  [error]="errorEditar()"
+  (guardar)="guardar($event)"
+  (eliminar)="eliminar($event)"
+  (cerrar)="cerrarEditar()" />

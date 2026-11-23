@@ -1,0 +1,36 @@
+<div class="filtros">
+  @for (f of ['todos', 'ok', 'error']; track f) {
+    <button
+      type="button"
+      class="filtro"
+      [class.filtro--activo]="filtro() === f"
+      (click)="filtro.set($any(f))">
+      {{ f === 'todos' ? 'Todas' : f === 'ok' ? 'Descargadas' : 'Con error' }}
+    </button>
+  }
+</div>
+
+<div class="tabla-caja">
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Cédula</th>
+        <th>Estado</th>
+        <th>Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (fila of visibles(); track fila[0] + fila[1] + fila[2]) {
+        <tr [class]="clase(fila[1])">
+          <td class="tabla__cedula">{{ fila[0] }}</td>
+          <td class="tabla__estado">{{ fila[1] }}</td>
+          <td class="tabla__detalle">{{ fila[2] }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="3" class="tabla__vacia">Todavía no hay resultados.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

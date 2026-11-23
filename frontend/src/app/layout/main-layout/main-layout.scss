@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.marco {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  margin-left: var(--ancho-lateral);
+}
+
+.contenido {
+  flex: 1;
+  padding: clamp(1rem, 2.5vw, 1.6rem) clamp(0.75rem, 2vw, 1.5rem) 3rem;
+}
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+@media (max-width: 900px) {
+  .marco {
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 901px) {
+  .velo {
+    display: none;
+  }
+}

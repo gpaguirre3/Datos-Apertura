@@ -1,0 +1,105 @@
+<h1 class="titulo">{{ titulo() }}</h1>
+
+<app-alerta [texto]="error()" />
+
+@if (cargandoCatalogo()) {
+  <app-cargando texto="Cargando los procesos…" />
+} @else if (!trabajo()) {
+  <section class="tarjeta">
+    <p class="paso"><span class="paso__numero">1</span> Elige qué quieres hacer</p>
+    <app-selector-proceso
+      [procesos]="procesos()"
+      [elegido]="elegido()?.clave ?? null"
+      (elegir)="elegir($event)" />
+  </section>
+
+  @if (elegido(); as proceso) {
+    <section class="tarjeta tarjeta--formulario">
+      <p class="paso">
+        <span class="paso__numero">2</span>
+        Sube el archivo {{ proceso.extension }}
+      </p>
+
+      <app-zona-archivo
+        [extension]="proceso.extension"
+        [archivo]="archivo()"
+        [ayuda]="proceso.extension === '.xlsx'
+          ? 'Excel con una columna de cédulas'
+          : 'ZIP con los PDF'"
+        (elegido)="archivoElegido($event)" />
+
+      @if (proceso.segundo_archivo) {
+        <app-zona-archivo
+          extension=".zip"
+          [archivo]="segundo()"
+          texto="ZIP de documentos: arrástralo aquí o haz clic para elegirlo"
+          (elegido)="archivoElegido($event, 'segundo')" />
+
+        <label class="campo-linea">
+          <span>Orden dentro del PDF:</span>
+          <select [(ngModel)]="orden">
+            @for (o of proceso.ordenes ?? []; track o.valor) {
+              <option [value]="o.valor">{{ o.texto }}</option>
+            }
+          </select>
+        </label>
+      }
+
+      @if (leyendo()) {
+        <div class="previa-espera"><app-cargando texto="Leyendo el archivo…" /></div>
+      } @else if (previa(); as v) {
+        <div class="paso-previa">
+          <p class="paso"><span class="paso__numero">3</span> Revisa lo que se va a procesar</p>
+          <app-vista-previa [datos]="v" />
+        </div>
+      }
+
+      <div class="acciones">
+        <button type="button" class="boton" [disabled]="!listo() || lanzando()" (click)="lanzar()">
+          {{ lanzando() ? 'Iniciando…' : 'Empezar' }}
+        </button>
+      </div>
+    </section>
+  }
+} @else {
+  <section class="tarjeta">
+    <header class="avance__cabecera">
+      <h2 class="avance__titulo">{{ estado()?.nombre ?? elegido()?.nombre }}</h2>
+      @if (estado(); as e) {
+        @if (!e.fin) {
+          <app-cargando [texto]="e.cancelando ? 'Cancelando…' : 'Procesando…'" />
+        }
+      }
+    </header>
+
+    <div class="barra-progreso" [attr.aria-valuenow]="porcentaje()" role="progressbar">
+      <span class="barra-progreso__relleno" [style.width.%]="porcentaje()"></span>
+    </div>
+
+    @if (estado(); as e) {
+      <ul class="cifras">
+        <li><b>{{ e.total }}</b><small>Total</small></li>
+        <li class="cifras--ok"><b>{{ e.ok }}</b><small>Descargadas</small></li>
+        <li class="cifras--error"><b>{{ e.errores }}</b><small>Con error</small></li>
+        <li><b>{{ e.total - e.hechos }}</b><small>Pendientes</small></li>
+      </ul>
+
+      <div class="acciones">
+        @if (!e.fin) {
+          <button type="button" class="boton boton--borde" [disabled]="e.cancelando" (click)="cancelar()">
+            Cancelar
+          </button>
+        } @else {
+          <button type="button" class="boton" [disabled]="descargando()" (click)="descargar()">
+            {{ descargando() ? 'Preparando…' : 'Descargar ZIP' }}
+          </button>
+          <button type="button" class="boton boton--borde" (click)="nuevo()">Empezar otro</button>
+        }
+      </div>
+
+      <app-tabla-avance [filas]="e.filas" />
+    } @else {
+      <app-cargando texto="Esperando los primeros resultados…" />
+    }
+  </section>
+}

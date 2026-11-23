@@ -1,0 +1,6 @@
+playwright
+openpyxl
+flask
+pymupdf
+pymysql
+PyJWT

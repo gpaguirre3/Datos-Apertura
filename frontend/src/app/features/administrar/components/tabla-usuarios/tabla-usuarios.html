@@ -1,0 +1,33 @@
+<div class="tabla-caja">
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th>Último acceso</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (u of usuarios(); track u.usuario) {
+        <tr [class.fila--yo]="u.usuario === yo()">
+          <td>
+            <b>{{ u.usuario }}</b>
+            @if (u.usuario === yo()) {
+              <small class="eres-tu">tú</small>
+            }
+          </td>
+          <td>{{ u.rol === 'admin' ? 'Administrador' : 'Usuario' }}</td>
+          <td>{{ u.ultimo_acceso ?? 'nunca' }}</td>
+          <td class="col-accion">
+            <button type="button" class="editar" (click)="editar.emit(u)">Editar</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4" class="vacio">No hay usuarios.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

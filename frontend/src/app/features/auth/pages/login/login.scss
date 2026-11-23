@@ -1,0 +1,53 @@
+.entrada {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 1.5rem;
+  background: linear-gradient(160deg, #1e293b, var(--marca-oscura));
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: min(23rem, 100%);
+  padding: 1.75rem;
+  border-radius: 16px;
+  background: var(--fondo-tarjeta);
+  box-shadow: 0 18px 40px rgb(15 23 42 / 35%);
+}
+
+.tarjeta__titulo {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.tarjeta__texto {
+  margin: 0 0 0.25rem;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.campo input {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-weight: 400;
+}
+
+.campo input:focus {
+  border-color: var(--marca);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 16%);
+  outline: none;
+}

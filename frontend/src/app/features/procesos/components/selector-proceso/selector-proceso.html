@@ -1,0 +1,18 @@
+<div class="rejilla" role="radiogroup" aria-label="Elige el proceso">
+  @for (p of procesos(); track p.clave) {
+    <button
+      type="button"
+      class="opcion"
+      role="radio"
+      [class.opcion--activa]="elegido() === p.clave"
+      [class.opcion--bloqueada]="!p.disponible"
+      [attr.aria-checked]="elegido() === p.clave"
+      [disabled]="!p.disponible"
+      [title]="p.disponible ? p.detalle : p.motivo"
+      (click)="elegir.emit(p)">
+      <b class="opcion__nombre">{{ p.nombre }}</b>
+      <small class="opcion__detalle">{{ p.disponible ? p.detalle : p.motivo }}</small>
+      <span class="opcion__tipo">{{ p.extension }}</span>
+    </button>
+  }
+</div>

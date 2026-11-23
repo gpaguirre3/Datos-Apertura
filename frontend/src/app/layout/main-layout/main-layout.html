@@ -1,0 +1,12 @@
+<app-sidebar [abierta]="lateralAbierta()" (cerrar)="lateralAbierta.set(false)" />
+
+@if (lateralAbierta()) {
+  <div class="velo" (click)="lateralAbierta.set(false)"></div>
+}
+
+<div class="marco">
+  <app-header (alternarMenu)="lateralAbierta.set(!lateralAbierta())" />
+  <main class="contenido">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,52 @@
+.clave {
+  position: relative;
+  display: block;
+}
+
+.clave__campo {
+  width: 100%;
+  padding: 0.45rem 2.3rem 0.45rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+
+.clave__campo:focus {
+  border-color: var(--marca);
+  outline: none;
+}
+
+.clave__ojo {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  transform: translateY(-50%);
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+
+.clave__ojo:hover {
+  color: var(--marca);
+}
+
+.clave__ojo svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

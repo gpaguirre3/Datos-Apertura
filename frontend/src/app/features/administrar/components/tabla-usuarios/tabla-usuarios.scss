@@ -1,0 +1,68 @@
+.tabla-caja {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.tabla th {
+  padding: 0.55rem 0.7rem;
+  background: #f6f8fa;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.tabla td {
+  padding: 0.5rem 0.7rem;
+  border-top: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+.fila--yo {
+  background: #f8fafc;
+}
+
+.vacio {
+  padding: 1.2rem;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+.eres-tu {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.col-accion {
+  width: 1px;
+  text-align: right;
+}
+
+.editar {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 7px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  cursor: pointer;
+}
+
+.editar:hover {
+  border-color: var(--marca);
+  color: var(--marca);
+}

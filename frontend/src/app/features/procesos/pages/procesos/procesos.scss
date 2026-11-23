@@ -1,0 +1,135 @@
+.titulo {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: var(--fondo-tarjeta);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 6%);
+}
+
+.tarjeta--formulario {
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.paso {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.paso__numero {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--marca);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.campo-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.campo-linea input,
+.campo-linea select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.avance__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.avance__titulo {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.barra-progreso {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.barra-progreso__relleno {
+  display: block;
+  height: 100%;
+  background: var(--marca);
+  transition: width 0.3s ease;
+}
+
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cifras li {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.cifras b {
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cifras small {
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+}
+
+.cifras--ok b {
+  color: #15803d;
+}
+
+.cifras--error b {
+  color: #b91c1c;
+}
+
+.paso-previa {
+  margin-top: 1rem;
+}
+
+.previa-espera {
+  margin-top: 1rem;
+}

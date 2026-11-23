@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.encabezado__titulo {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.migas {
+  display: flex;
+  gap: 0.4rem;
+  color: var(--texto-suave);
+  font-size: 0.82rem;
+}
+
+.migas a {
+  color: var(--marca);
+  text-decoration: none;
+}
+
+.migas a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.cabecera-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-right: 1rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.cabecera-tabla .tarjeta__titulo {
+  border-bottom: none;
+}
+
+.cabecera-tabla__acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cabecera-tabla__acciones .boton {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+}

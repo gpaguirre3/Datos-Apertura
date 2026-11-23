@@ -1,0 +1,25 @@
+# Dependencias y salidas de compilación
+/node_modules
+/dist
+/tmp
+/out-tsc
+/.angular/cache
+
+# Configuración local que no se comparte
+/src/environments/environment.local.ts
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.history/*
+
+# Registros de ejecución
+*.log
+npm-debug.log
+yarn-error.log
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

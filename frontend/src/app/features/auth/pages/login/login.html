@@ -1,0 +1,33 @@
+<div class="entrada">
+  <form class="tarjeta" (ngSubmit)="entrar()">
+    <h1 class="tarjeta__titulo">Apertura de Datos</h1>
+
+    <app-alerta [texto]="error()" />
+
+    <label class="campo">
+      <span>Usuario</span>
+      <input
+        name="usuario"
+        [(ngModel)]="usuario"
+        autocomplete="username"
+        autocapitalize="none"
+        spellcheck="false"
+        required
+        autofocus />
+    </label>
+
+    <label class="campo">
+      <span>Contraseña</span>
+      <input
+        name="clave"
+        type="password"
+        [(ngModel)]="clave"
+        autocomplete="current-password"
+        required />
+    </label>
+
+    <button type="submit" class="boton" [disabled]="enviando() || !usuario.trim() || !clave">
+      {{ enviando() ? 'Entrando…' : 'Entrar' }}
+    </button>
+  </form>
+</div>

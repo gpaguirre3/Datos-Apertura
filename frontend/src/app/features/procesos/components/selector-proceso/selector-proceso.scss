@@ -1,0 +1,53 @@
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.6rem;
+}
+
+.opcion {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.opcion:hover:not(:disabled) {
+  border-color: var(--marca);
+}
+
+.opcion--activa {
+  border-color: var(--marca);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 16%);
+}
+
+.opcion--bloqueada {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.opcion__nombre {
+  font-size: 0.92rem;
+}
+
+.opcion__detalle {
+  color: var(--texto-suave);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.opcion__tipo {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  color: var(--texto-suave);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,38 @@
+<span class="clave">
+  <input
+    class="clave__campo"
+    [name]="nombre()"
+    [type]="viendo() ? 'text' : 'password'"
+    [(ngModel)]="valor"
+    [placeholder]="marcador()"
+    autocomplete="new-password"
+    spellcheck="false" />
+
+  <button
+    type="button"
+    class="clave__ojo"
+    [attr.aria-label]="viendo() ? 'Ocultar la contraseña' : 'Ver la contraseña mientras mantienes pulsado'"
+    [attr.aria-pressed]="viendo()"
+    (mousedown)="ver(true)"
+    (mouseup)="ver(false)"
+    (mouseleave)="ver(false)"
+    (touchstart)="ver(true)"
+    (touchend)="ver(false)"
+    (touchcancel)="ver(false)"
+    (blur)="ver(false)"
+    (keydown.space)="ver(true)"
+    (keyup.space)="ver(false)">
+    @if (viendo()) {
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 3l18 18" />
+        <path d="M10.6 10.6a2 2 0 002.8 2.8" />
+        <path d="M9.4 5.2A9.5 9.5 0 0112 5c5 0 9 4.5 9 7a12 12 0 01-2.8 3.5M6.2 6.7A12.4 12.4 0 003 12c0 2.5 4 7 9 7a9.6 9.6 0 003.4-.6" />
+      </svg>
+    } @else {
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 12s3.6-7 9-7 9 7 9 7-3.6 7-9 7-9-7-9-7z" />
+        <circle cx="12" cy="12" r="2.6" />
+      </svg>
+    }
+  </button>
+</span>

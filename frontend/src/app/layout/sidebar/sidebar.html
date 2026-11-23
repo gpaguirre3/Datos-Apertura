@@ -1,0 +1,19 @@
+<aside class="lateral" [class.lateral--abierta]="abierta()">
+  <a class="lateral__marca" routerLink="/procesos" (click)="cerrar.emit()">
+    <img class="lateral__logo" src="icono.png" alt="" />
+    <span class="lateral__nombre">Apertura de Datos</span>
+  </a>
+
+  <nav class="lateral__nav">
+    @for (e of visibles(); track e.ruta) {
+      <a
+        [routerLink]="e.ruta"
+        routerLinkActive="activo"
+        [routerLinkActiveOptions]="{ exact: !!e.exacta }"
+        (click)="cerrar.emit()">
+        <span class="lateral__icono" aria-hidden="true">{{ e.icono }}</span>
+        {{ e.texto }}
+      </a>
+    }
+  </nav>
+</aside>

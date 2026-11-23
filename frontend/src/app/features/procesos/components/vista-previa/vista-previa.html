@@ -1,0 +1,63 @@
+<div class="previa">
+  <div class="previa__cifras">
+    <div class="cifra cifra--principal">
+      <span class="cifra__valor">{{ datos().distintos }}</span>
+      <span class="cifra__texto">
+        {{ datos().distintos === 1 ? 'se va a procesar' : 'se van a procesar' }}
+      </span>
+    </div>
+
+    <div class="cifra">
+      <span class="cifra__valor">{{ datos().total }}</span>
+      <span class="cifra__texto">{{ datos().total === 1 ? 'fila en el archivo' : 'filas en el archivo' }}</span>
+    </div>
+
+    @if (repetidas() > 0) {
+      <div class="cifra cifra--aviso">
+        <span class="cifra__valor">{{ repetidas() }}</span>
+        <span class="cifra__texto">repetidas, no se repiten las consultas</span>
+      </div>
+    }
+  </div>
+
+  <div class="previa__caja">
+    <table class="previa__tabla">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          @for (c of datos().columnas; track c) {
+            <th>{{ c }}</th>
+          }
+          @if (repetidas() > 0) {
+            <th class="col-veces">Veces</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (fila of filas(); track fila.numero) {
+          <tr>
+            <td class="col-num">{{ fila.numero }}</td>
+            @for (valor of fila.valores; track $index) {
+              <td class="col-dato">{{ valor }}</td>
+            }
+            @if (repetidas() > 0) {
+              <td class="col-veces">
+                @if (fila.veces > 1) {
+                  <span class="veces">×{{ fila.veces }}</span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="previa__nota">
+    @if (datos().recortada) {
+      Vista de las primeras {{ mostradas() }} de {{ datos().distintos }}.
+    } @else if (datos().agrupada && repetidas() > 0) {
+      Cada valor aparece una vez; «×» es las veces que venía en el archivo.
+    }
+  </p>
+</div>
