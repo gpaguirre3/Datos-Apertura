@@ -1,6 +1,8 @@
 import argparse
 import csv
+import shutil
 import sys
+import zipfile
 from pathlib import Path
 
 try: 
@@ -26,9 +28,10 @@ CONSULTAS = [
 
 PORTADA = [c for c in CONSULTAS if c[0] in ("Mina", "Aduana", "Procesos judiciales")]
 
-ORDEN_PDF = ["ISSPOL", "ISSFA", "SUPA"]
+ORDEN_PDF = ["SUPA", "ISSPOL", "ISSFA"]
 LOTE = 10
 ORDEN_IMAGENES = ["Mina", "Aduana", "Procesos judiciales"]
+INDIVIDUALES = "individuales.zip"
 
 A4 = fitz.paper_rect("a4")
 MARGEN, SEPARACION = 36, 18 
@@ -59,18 +62,18 @@ def agregar_imagenes(doc, imagenes):
 
 def armar_pdf(cedula, salida, destino, consultas=CONSULTAS):
     pedidas = [n for n, *_ in consultas]
-    doc, incluidas = fitz.open(), []
+    doc = fitz.open()
+    imagenes = [(n, carpeta(salida, n) / f"{cedula}.png")
+                for n in ORDEN_IMAGENES if n in pedidas]
+    imagenes = [(n, r) for n, r in imagenes if r.exists()]
+    agregar_imagenes(doc, [r for _, r in imagenes])
+    incluidas = [n for n, _ in imagenes]
     for nombre in [n for n in ORDEN_PDF if n in pedidas]:
         parte = carpeta(salida, nombre) / f"{cedula}.pdf"
         if parte.exists():
             with fitz.open(parte) as pdf:
                 doc.insert_pdf(pdf)
             incluidas.append(nombre)
-    imagenes = [(n, carpeta(salida, n) / f"{cedula}.png")
-                for n in ORDEN_IMAGENES if n in pedidas]
-    imagenes = [(n, r) for n, r in imagenes if r.exists()]
-    agregar_imagenes(doc, [r for _, r in imagenes])
-    incluidas += [n for n, _ in imagenes]
     if incluidas:
         doc.save(destino, garbage=3, deflate=True)
     doc.close()
@@ -141,7 +144,23 @@ def procesar(personas, salida, al_avanzar=None, cancelado=None, consultas=CONSUL
             log.writerow([cedula, *finales[cedula], *partes])
 
     unir_todos(cedulas, salida, salida / nombre_todos)
+    shutil.rmtree(salida / "partes", ignore_errors=True)
+    empaquetar(cedulas, salida)
     return salida / "resultado.csv"
+
+
+def empaquetar(cedulas, salida):
+    """Deja los PDF por cédula dentro de un zip y los quita de la carpeta."""
+    pdfs = [salida / f"{c}.pdf" for c in cedulas]
+    pdfs = [p for p in pdfs if p.exists()]
+    if not pdfs:
+        return None
+    destino = salida / INDIVIDUALES
+    with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
+        for pdf in pdfs:
+            z.write(pdf, pdf.name)
+            pdf.unlink()
+    return destino
 
 
 def unir_todos(cedulas, salida, destino):

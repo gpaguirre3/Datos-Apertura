@@ -1,6 +1,7 @@
 playwright
 openpyxl
 flask
+python-dotenv
 pymupdf
 pymysql
 PyJWT
