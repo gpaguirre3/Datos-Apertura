@@ -106,15 +106,31 @@ MINIMO = {"width": 1024, "height": 700}  # por debajo de esto el captcha no cabe
 
 
 def ajustar_a_pantalla(page):
-    """Agranda la ventana hasta la pantalla real para que quepa el reto del captcha."""
+    """Maximiza la ventana sobre la pantalla real para que quepa el reto del captcha."""
     try:
         ancho, alto = page.evaluate("() => [screen.availWidth, screen.availHeight]")
         page.set_viewport_size({
-            "width": max(MINIMO["width"], int(ancho) - 20),
+            "width": max(MINIMO["width"], int(ancho)),
             "height": max(MINIMO["height"], int(alto) - BARRA_NAVEGADOR),
         })
     except Exception:
         pass  # se queda con la medida de reserva
+
+
+CENTRAR_CAPTCHA = """() => {
+  let movidos = 0;
+  for (const marco of document.querySelectorAll("iframe")) {
+    if (!/recaptcha/i.test(marco.src) || !/bframe/.test(marco.src)) continue;
+    const caja = marco.parentElement;  // el div que lo posiciona junto a la casilla
+    if (!caja) continue;
+    Object.assign(caja.style, {
+      position: "fixed", left: "50%", top: "50%", right: "auto", bottom: "auto",
+      transform: "translate(-50%, -50%)", margin: "0", zIndex: "2147483647",
+    });
+    movidos++;
+  }
+  return movidos;
+}"""
 
 
 def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelado=None):
@@ -164,6 +180,10 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
                     while not buscar.is_enabled():
                         if time.time() > limite or (cancelado and cancelado()):
                             return False
+                        try:
+                            page.evaluate(CENTRAR_CAPTCHA)  # el reto de imágenes sale recortado al borde
+                        except Exception:
+                            pass
                         page.wait_for_timeout(500)
                     return True
 
