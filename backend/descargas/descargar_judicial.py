@@ -100,6 +100,23 @@ def hay_pantalla():
     return not sys.platform.startswith("linux") or bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
 
 
+VENTANA = {"width": 1280, "height": 960}  # medida de reserva si no se puede leer la pantalla
+BARRA_NAVEGADOR = 120  # alto aproximado de pestañas y barra de direcciones
+MINIMO = {"width": 1024, "height": 700}  # por debajo de esto el captcha no cabe
+
+
+def ajustar_a_pantalla(page):
+    """Agranda la ventana hasta la pantalla real para que quepa el reto del captcha."""
+    try:
+        ancho, alto = page.evaluate("() => [screen.availWidth, screen.availHeight]")
+        page.set_viewport_size({
+            "width": max(MINIMO["width"], int(ancho) - 20),
+            "height": max(MINIMO["height"], int(alto) - BARRA_NAVEGADOR),
+        })
+    except Exception:
+        pass  # se queda con la medida de reserva
+
+
 def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelado=None):
     if not hay_pantalla():
         raise RuntimeError("Procesos judiciales pide un captcha que debes marcar tú: "
@@ -109,7 +126,8 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=False, proxy=leer_proxy(), args=["--window-position=0,0"])
-        page = browser.new_page(viewport={"width": 1280, "height": 560}, device_scale_factor=2)
+        page = browser.new_page(viewport=dict(VENTANA), device_scale_factor=2)
+        ajustar_a_pantalla(page)
 
         ultima = {"busqueda": 0.0}  # cuándo empezó la búsqueda anterior
 
