@@ -9,7 +9,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from . import db, registros
 
 CARPETA = Path(__file__).resolve().parents[1]  
-CLAVE_SECRETA = CARPETA / ".clave_sesion"  
+# En Docker se apunta a un volumen para que las sesiones sobrevivan al redespliegue
+CLAVE_SECRETA = Path(os.environ.get("CLAVE_SESION_ARCHIVO") or CARPETA / ".clave_sesion")
 INTENTOS_MAX, BLOQUEO_SEG = 5, 5 * 60
 CLAVE_MINIMA = 4
 ADMIN_INICIAL = ("admin", "admin123")
@@ -73,6 +74,7 @@ def fecha_texto(valor):
 def configurar(app):
     """Al arrancar: crea la clave con la que se firman los tokens y deja la base lista."""
     if not CLAVE_SECRETA.exists():
+        CLAVE_SECRETA.parent.mkdir(parents=True, exist_ok=True)
         CLAVE_SECRETA.write_text(secrets.token_hex(32))
         try:
             CLAVE_SECRETA.chmod(0o600)

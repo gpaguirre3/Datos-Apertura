@@ -85,3 +85,30 @@
 .fila--cancelado .tabla__estado {
   color: var(--texto-suave);
 }
+
+.aviso-captcha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f0c36d;
+  border-radius: 8px;
+  background: #fdf6e3;
+  color: #7a5c00;
+
+  &__enlace {
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    background: #1f3b73;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background: #16294f;
+    }
+  }
+}

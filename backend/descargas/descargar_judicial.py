@@ -97,6 +97,15 @@ def captura(page, destino, rect_js=RECT_CONTENIDO):
     page.screenshot(path=destino, full_page=True, clip=rect) if rect else page.screenshot(path=destino, full_page=True)
 
 
+AVISO_CAPTCHA_LOCAL = "marca 'No soy un robot' en la ventana del navegador"
+AVISO_CAPTCHA_REMOTO = "abre Pantalla remota (/pantalla/) y marca 'No soy un robot'"
+
+
+def aviso_captcha():
+    """En el servidor el navegador no está a la vista: se mira por el visor web."""
+    return AVISO_CAPTCHA_REMOTO if os.environ.get("PANTALLA_REMOTA") else AVISO_CAPTCHA_LOCAL
+
+
 def hay_pantalla():
     return not sys.platform.startswith("linux") or bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
 
@@ -140,8 +149,8 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
                 def resolver_captcha():
                     """Espera a que la persona marque el captcha (BUSCAR vuelve a habilitarse)."""
                     if al_avanzar:
-                        al_avanzar(cedula, "CAPTCHA", "marca 'No soy un robot' en la ventana del navegador")
-                    print(f"{cedula}: marca 'No soy un robot' en la ventana del navegador...")
+                        al_avanzar(cedula, "CAPTCHA", aviso_captcha())
+                    print(f"{cedula}: {aviso_captcha()}...")
                     page.bring_to_front()
                     captcha = page.locator("iframe[title='reCAPTCHA']").first
                     if captcha.count():

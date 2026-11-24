@@ -1,3 +1,12 @@
+@if (hayCaptcha()) {
+  <div class="aviso-captcha">
+    <span>Hay una consulta esperando que marques un captcha.</span>
+    <a class="aviso-captcha__enlace" href="/pantalla/" target="_blank" rel="noopener">
+      Abrir pantalla remota
+    </a>
+  </div>
+}
+
 <div class="filtros">
   @for (f of ['todos', 'ok', 'error']; track f) {
     <button

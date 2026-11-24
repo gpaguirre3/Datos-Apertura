@@ -14,6 +14,8 @@ export class TablaAvance {
   readonly filas = input.required<FilaAvance[]>();
   readonly filtro = signal<Filtro>('todos');
 
+  readonly hayCaptcha = computed(() => this.filas().some((fila) => fila[1] === 'CAPTCHA'));
+
   readonly visibles = computed(() => {
     const f = this.filtro();
     if (f === 'todos') return this.filas();
@@ -26,7 +28,7 @@ export class TablaAvance {
 
   clase(estado: string): string {
     if (this.esOk(estado)) return 'fila--ok';
-    if (estado === 'REINTENTANDO') return 'fila--espera';
+    if (estado === 'REINTENTANDO' || estado === 'CAPTCHA') return 'fila--espera';
     if (estado === 'CANCELADO') return 'fila--cancelado';
     return 'fila--error';
   }

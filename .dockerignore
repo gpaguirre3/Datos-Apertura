@@ -1,0 +1,13 @@
+**/venv/
+**/node_modules/
+**/__pycache__/
+**/.angular/
+**/dist/
+backend/.env
+backend/.clave_sesion
+backend/registros/
+config/produccion.env
+logs/
+storage/
+backups/
+.git/

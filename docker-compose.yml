@@ -1,0 +1,52 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    env_file: [config/produccion.env]
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_datos:/data
+      - caddy_config:/config
+    depends_on: [frontend, backend]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    restart: unless-stopped
+    env_file: [config/produccion.env]
+    environment:
+      CLAVE_SESION_ARCHIVO: /app/config/clave_sesion
+    volumes:
+      - ./logs:/app/registros                  # registros de auditoría (JSON)
+      - ./storage/temp:/tmp/sacardatos-trabajos  # trabajos en curso y zips
+      - secretos:/app/config                   # clave de firma de sesión
+    depends_on:
+      db: {condition: service_healthy}
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    env_file: [config/produccion.env]
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - datos_mysql:/var/lib/mysql
+      - ./database/inicio:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  datos_mysql:
+  caddy_datos:
+  caddy_config:
+  secretos:

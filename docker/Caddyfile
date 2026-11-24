@@ -1,0 +1,22 @@
+# Saca y renueva el certificado solo. DOMINIO se define en config/produccion.env
+{$DOMINIO} {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy backend:4200
+	}
+
+	# Visor de la pantalla del servidor, para marcar el captcha.
+	# Solo entra quien ya tiene sesión abierta en la app: se pregunta a la propia API.
+	handle_path /pantalla/* {
+		forward_auth backend:4200 {
+			uri /api/auth/me
+			copy_headers Cookie
+		}
+		reverse_proxy backend:6080
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+}

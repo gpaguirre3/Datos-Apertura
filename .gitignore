@@ -3,3 +3,9 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Despliegue
+config/produccion.env
+logs/
+storage/
+backups/
