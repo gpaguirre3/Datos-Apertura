@@ -20,6 +20,11 @@ nano config/produccion.env          # dominio, contraseñas y credenciales de Mi
 El dominio debe apuntar ya al servidor y los puertos 80 y 443 estar libres: Caddy
 saca el certificado solo en el primer arranque.
 
+**Solo en red interna**, sin dominio público, se pone la IP con prefijo:
+`DOMINIO=http://192.168.1.50`. Caddy sirve en claro por el puerto 80 y no intenta
+sacar certificado. La app detecta que no hay HTTPS y ajusta la cookie de sesión,
+así que funciona igual; lo que no hay es cifrado dentro de la red.
+
 La primera vez el backend crea las tablas y el usuario `admin` con clave `admin123`.
 **Cámbiala nada más entrar.**
 
@@ -87,9 +92,9 @@ Casi siempre es el DNS todavía sin propagar o el puerto 80 ocupado por otro ser
 `docker compose logs backend`. Comprueba que `DB_PASSWORD` y `MYSQL_PASSWORD`
 tengan el mismo valor en `config/produccion.env`.
 
-**No deja iniciar sesión aunque la clave sea buena.** La cookie de sesión exige
-HTTPS. Entrando por IP o por `http://` el navegador la descarta: hay que entrar
-por el dominio.
+**No deja iniciar sesión aunque la clave sea buena.** Entra siempre por la misma
+dirección que pusiste en `DOMINIO`. Si la app se sirve por HTTPS pero entras por
+`http://`, o al revés, la cookie de sesión no viaja.
 
 **Un robot falla en todas las cédulas.** Normalmente es la página de origen caída
 o bloqueando al servidor. En `storage/temp/` quedan capturas del error.

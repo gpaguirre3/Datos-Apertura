@@ -4,7 +4,7 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ .
-RUN npm run build
+RUN npm run build -- --base-href /Apertura/
 
 FROM nginx:1.27-alpine
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
