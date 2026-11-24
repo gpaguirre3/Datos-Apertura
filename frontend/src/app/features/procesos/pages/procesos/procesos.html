@@ -97,7 +97,7 @@
         }
       </div>
 
-      <app-tabla-avance [filas]="e.filas" />
+      <app-tabla-avance [filas]="e.filas" [terminado]="e.fin" />
     } @else {
       <app-cargando texto="Esperando los primeros resultados…" />
     }

@@ -64,6 +64,74 @@ El visor solo escucha dentro del contenedor; no hay ningún puerto VNC expuesto 
 exterior. El tamaño de la pantalla se cambia con `PANTALLA_TAMANO` en
 `config/produccion.env`.
 
+## Publicar bajo una subcarpeta
+
+Por omisión la app se sirve en la raíz del dominio. Para publicarla en
+`http://servidor/Apertura` hay **cuatro** sitios que deben coincidir, porque la ruta
+queda grabada en el build de Angular:
+
+| Archivo | Qué lleva |
+|---|---|
+| `docker/frontend.Dockerfile` | `npm run build -- --base-href /Apertura/` |
+| `frontend/src/environments/environment.prod.ts` | `apiUrl: '/Apertura/api'` |
+| `docker/Caddyfile` | las rutas `/Apertura/api/*`, `/Apertura/pantalla/*` y `/Apertura/*` |
+| `tabla-avance.html` | el enlace a `/Apertura/pantalla/` |
+
+Cambiar solo el Caddyfile da una pantalla en blanco: el navegador pide los archivos
+en la raíz y no los encuentra. Tras cualquier cambio hay que reconstruir el frontend:
+
+```bash
+docker compose up -d --build frontend caddy
+```
+
+## Si ya hay otro servidor web en el puerto 80
+
+Es frecuente: otro Apache, nginx o Caddy ocupando el 80 y el 443. Dos salidas.
+
+**Publicar en otro puerto.** Lo menos intrusivo:
+
+```yaml
+    ports: ["8080:80"]
+```
+
+y se entra por `http://servidor:8080`.
+
+**Ponerlo detrás del servidor que ya existe.** Se publica solo en local
+(`ports: ["127.0.0.1:8080:80"]`), se pone `DOMINIO=:80` para que Caddy acepte
+cualquier nombre de host, y el servidor de delante reenvía. Con Apache:
+
+```apache
+ProxyPass        /Apertura/pantalla/websockify ws://127.0.0.1:8080/Apertura/pantalla/websockify
+ProxyPassReverse /Apertura/pantalla/websockify ws://127.0.0.1:8080/Apertura/pantalla/websockify
+ProxyPass        /Apertura http://127.0.0.1:8080/Apertura
+ProxyPassReverse /Apertura http://127.0.0.1:8080/Apertura
+```
+
+La regla del `websockify` va **antes** que la general, o la pantalla remota no
+funciona: se aplica la primera que encaja. Requiere `a2enmod proxy proxy_http
+proxy_wstunnel`.
+
+## Base de datos fuera de Docker
+
+Si MySQL ya existe en el servidor, se quita el servicio `db` del compose, se borra
+el volumen `datos_mysql` y en el servicio `backend` se añade:
+
+```yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+```
+
+En `config/produccion.env`, `DB_HOST=host.docker.internal`. Y en MySQL,
+`bind-address = 0.0.0.0` en `/etc/mysql/mysql.conf.d/mysqld.cnf`, seguido de
+`systemctl restart mysql`: un contenedor no alcanza el `127.0.0.1` del servidor.
+
+Eso deja la base escuchando en toda la red, así que conviene restringir el usuario
+a las direcciones de Docker y cerrar el puerto:
+
+```sql
+RENAME USER 'sacardatos'@'%' TO 'sacardatos'@'172.%';
+```
+
 ## Operación diaria
 
 ```bash

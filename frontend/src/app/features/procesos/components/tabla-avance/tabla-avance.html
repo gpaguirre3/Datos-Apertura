@@ -1,9 +1,9 @@
 @if (hayCaptcha()) {
   <div class="aviso-captcha">
     <span>Hay una consulta esperando que marques un captcha.</span>
-    <a class="aviso-captcha__enlace" href="/Apertura/pantalla/" target="_blank" rel="noopener">
+    <button type="button" class="aviso-captcha__enlace" (click)="abrirPantalla()">
       Abrir pantalla remota
-    </a>
+    </button>
   </div>
 }
 

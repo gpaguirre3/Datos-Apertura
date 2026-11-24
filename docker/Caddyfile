@@ -17,6 +17,13 @@
 		reverse_proxy backend:6080
 	}
 
+	# noVNC pide el websocket en la raíz del sitio, no bajo su propia carpeta
+	# La negociación del websocket no sobrevive a forward_auth, así que aquí
+	# la protección es la contraseña del propio visor (VISOR_CLAVE).
+	handle /websockify {
+		reverse_proxy backend:6080
+	}
+
 	# La interfaz
 	handle_path /Apertura/* {
 		reverse_proxy frontend:80
