@@ -13,3 +13,6 @@ usuarios.json.migrado
 
 
 *.log
+
+# Perfil del navegador de Procesos judiciales (cookies)
+.perfil_judicial/

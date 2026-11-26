@@ -88,8 +88,26 @@ Es el único que exige una persona. Por eso:
   encoge si no cabe. Sin eso, Google lo ancla junto a la casilla y queda cortado.
 - Espera hasta 180 segundos (`ESPERA_CAPTCHA`). Pasados, esa cédula se marca y el
   lote continúa.
-- Deja 15 segundos entre búsquedas (`PAUSA_ENTRE_CONSULTAS`) para no parecer un bot,
+- Deja 15 segundos entre búsquedas (`JUDICIAL_PAUSA`) para no parecer un bot,
   que es lo que dispara el reto de imágenes en vez de la simple casilla.
+- Usa un **perfil de navegador persistente** (`JUDICIAL_PERFIL`): las cookies de Google
+  sobreviven entre ejecuciones. Un navegador sin historia es lo que más hace que
+  reCAPTCHA rechace respuestas correctas y encadene rondas. Si dos consultas de
+  Procesos judiciales coinciden, la segunda usa un perfil temporal, porque Chromium
+  no deja abrir el mismo perfil dos veces.
+
+### Si el captcha rechaza respuestas correctas
+
+reCAPTCHA no puntúa solo los clics: puntúa el navegador entero. Si lo considera
+sospechoso, sigue pidiendo rondas aunque se acierte. Lo que ayuda, de más a menos:
+
+1. **Iniciar sesión con una cuenta de Google** en ese navegador, una vez, desde la
+   pantalla remota. Con el perfil persistente la sesión se mantiene, y es lo que más
+   rebaja la dificultad.
+2. Subir `JUDICIAL_PAUSA` (30-60 s) si se lanzan muchas cédulas seguidas.
+3. En los retos de «haz clic hasta que no quede ninguna», las imágenes se reponen:
+   hay que esperar a que terminen de aparecer y seguir marcando hasta que no salga
+   ninguna más antes de pulsar Verificar.
 
 En el servidor el aviso cambia solo: con `PANTALLA_REMOTA` definida, en vez de decir
 «marca la casilla en la ventana» indica abrir la pantalla remota.

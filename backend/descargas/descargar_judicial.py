@@ -13,7 +13,10 @@ from .descargar_certificados import (ajustar_ventana, captura_error, centrar_cap
 URL = os.environ.get("JUDICIAL_URL", "https://procesosjudiciales.funcionjudicial.gob.ec/busqueda-filtros")
 SIN_RESULTADOS = "La consulta no devolvió resultados"
 ESPERA_CAPTCHA = 180  # segundos para que la persona marque el captcha
-PAUSA_ENTRE_CONSULTAS = 15  # segundos entre una búsqueda y la siguiente, a ritmo de persona
+# Segundos entre una búsqueda y la siguiente: ir más rápido dispara retos de imágenes más duros
+PAUSA_ENTRE_CONSULTAS = int(os.environ.get("JUDICIAL_PAUSA", "15"))
+# Perfil que sobrevive entre ejecuciones: con cookies e historial, reCAPTCHA se fía más
+PERFIL = Path(os.environ.get("JUDICIAL_PERFIL") or Path(__file__).resolve().parents[1] / ".perfil_judicial")
 
 ESTADO_JS = """([sinResultados, captchaPosible]) => {
   const texto = document.body.innerText;
@@ -110,6 +113,20 @@ def hay_pantalla():
     return not sys.platform.startswith("linux") or bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
 
 
+def abrir_navegador(pw):
+    """Navegador con el perfil persistente. Si otra consulta lo está usando, uno temporal."""
+    opciones = dict(headless=False, proxy=leer_proxy(), no_viewport=True,
+                    args=["--window-position=0,0", "--start-maximized"])
+    try:
+        PERFIL.mkdir(parents=True, exist_ok=True)
+        return pw.chromium.launch_persistent_context(str(PERFIL), **opciones)
+    except Exception as e:
+        # Chromium bloquea el perfil mientras está abierto: dos consultas a la vez no pueden compartirlo
+        print(f"Perfil persistente no disponible ({str(e).splitlines()[0]}); se usa uno temporal")
+        navegador = pw.chromium.launch(headless=False, proxy=leer_proxy(), args=opciones["args"])
+        return navegador.new_context(no_viewport=True)
+
+
 def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelado=None):
     if not hay_pantalla():
         raise RuntimeError("Procesos judiciales pide un captcha que debes marcar tú: "
@@ -118,10 +135,8 @@ def procesar(cedulas, salida, visible=True, espera=60, al_avanzar=None, cancelad
     salida.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=False, proxy=leer_proxy(),
-                                     args=["--window-position=0,0", "--start-maximized"])
-        # Sin viewport fijo la página ocupa la ventana real, sea cual sea la pantalla
-        page = browser.new_page(no_viewport=True)
+        browser = abrir_navegador(pw)
+        page = browser.pages[0] if browser.pages else browser.new_page()
         print("Ventana", ajustar_ventana(page))
 
         ultima = {"busqueda": 0.0}  # cuándo empezó la búsqueda anterior

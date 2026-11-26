@@ -242,6 +242,9 @@ CENTRAR_CAPTCHA = """() => {
     if (!/recaptcha/i.test(marco.src) || !/bframe/.test(marco.src)) continue;
     const caja = marco.parentElement;  // el div que lo pega a la casilla y lo saca de la pantalla
     if (!caja) continue;
+    // Si ya se ve entero no se toca: moverlo sin necesidad solo añade ruido mientras se resuelve
+    const r = marco.getBoundingClientRect();
+    if (r.width === 0 || (r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight)) continue;
     const ancho = marco.offsetWidth || 400, alto = marco.offsetHeight || 580;
     // En pantallas pequeñas se encoge lo justo para que quepa entero
     const escala = Math.min(1, (innerWidth - 24) / ancho, (innerHeight - 24) / alto);

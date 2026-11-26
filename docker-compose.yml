@@ -24,10 +24,12 @@ services:
     env_file: [config/produccion.env]
     environment:
       CLAVE_SESION_ARCHIVO: /app/config/clave_sesion
+      JUDICIAL_PERFIL: /app/perfil_judicial
     volumes:
       - ./logs:/app/registros                  # registros de auditoría (JSON)
       - ./storage/temp:/tmp/sacardatos-trabajos  # trabajos en curso y zips
       - secretos:/app/config                   # clave de firma de sesión
+      - perfil_judicial:/app/perfil_judicial   # cookies del navegador del captcha
     depends_on:
       db: {condition: service_healthy}
 
@@ -50,3 +52,4 @@ volumes:
   caddy_datos:
   caddy_config:
   secretos:
+  perfil_judicial:
